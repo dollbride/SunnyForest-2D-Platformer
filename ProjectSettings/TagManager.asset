@@ -11,17 +11,17 @@ TagManager:
   - 
   - Water
   - UI
+  - Ground
   - 
   - 
   - 
+  - PlayerTrigger
+  - PlayerCollision
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - EnemyTrigger
+  - EnemyCollision
   - 
   - 
   - 
@@ -58,4 +58,7 @@ TagManager:
     locked: 0
   - name: Foregroundprop
     uniqueID: 1280130107
+    locked: 0
+  - name: Player
+    uniqueID: 3810183023
     locked: 0
