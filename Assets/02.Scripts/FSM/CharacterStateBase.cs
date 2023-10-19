@@ -24,20 +24,15 @@ namespace Platformer.FSM
         Ladder
     }
 
-    public class CharacterStateBase : IState<CharacterStateID>
+    public abstract class CharacterStateBase : StateBase<CharacterStateID>
     {
-        public virtual CharacterStateID id { get; }
-
-        public virtual bool canExecute => true;
-        // 기본적으로 true지만 이걸 상속받은 자식이 오버라이드 할 수 있도록 버츄얼 키워드 지정
-
         protected StateMachine<CharacterStateID> machine;
         protected CharacterController controller;
         protected Transform transform;
         protected Rigidbody2D rigidbody;
         protected Animator animator;
 
-        public CharacterStateBase(StateMachine<CharacterStateID> machine)
+        public CharacterStateBase(CharacterMachine machine) : base(machine)
         {
             this.machine = machine;
             this.controller = machine.owner;
@@ -46,21 +41,6 @@ namespace Platformer.FSM
             this.animator = machine.owner.GetComponentInChildren<Animator>();
         }
 
-        public virtual void OnStateEnter()
-        {
-        }
-
-        public virtual void OnStateExit()
-        {
-        }
-
-        public virtual CharacterStateID OnStateUpdate()
-        {
-            return id;
-        }
-
-        public virtual void OnStateFixedUpdate()
-        {
-        }
+        
     }
 }

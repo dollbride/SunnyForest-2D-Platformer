@@ -9,13 +9,17 @@ namespace Platformer.FSM
     public class StateMachine<T>
         where T : Enum
     {
-        public CharacterController owner;
         public T currentStateID;
         public Dictionary<T, IState<T>> states;
 
         public void Init(IDictionary<T, IState<T>> copy)
         {
             states = new Dictionary<T, IState<T>>(copy);
+        }
+
+        public void UpdateState()
+        {
+            ChangeState(states[currentStateID].OnStateUpdate());
         }
 
         public bool ChangeState(T newStateID)
@@ -28,7 +32,7 @@ namespace Platformer.FSM
             if (states[newStateID].canExecute == false)
                 return false;
 
-            states[currentStateID].OnStateExit();   // 기존 상태에서 탈출
+            states[currentStateID].OnStateExit();   // 기존 상태에서 탈출0
             currentStateID = newStateID;            // 상태 갱신
             states[currentStateID].OnStateEnter();  // 새로운 상태로 진입
             return true;
