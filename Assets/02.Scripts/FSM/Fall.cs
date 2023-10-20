@@ -9,11 +9,16 @@ namespace Platformer.FSM.Character
         public override bool canExecute => base.canExecute &&
             (machine.currentStateID == CharacterStateID.Idle ||
             machine.currentStateID == CharacterStateID.Move ||
-            machine.currentStateID == CharacterStateID.Jump);
+            machine.currentStateID == CharacterStateID.Jump || 
+            machine.currentStateID == CharacterStateID.DoubleJump ||
+            machine.currentStateID == CharacterStateID.DownJump);
 
-        public Fall(CharacterMachine machine) : base(machine)
+        private float _landingDistance;
+        private float _fallStartPosY;
+
+        public Fall(CharacterMachine machine, float landingDistance) : base(machine)
         {
-
+            _landingDistance = landingDistance;
         }
 
         public override void OnStateEnter()
@@ -21,6 +26,7 @@ namespace Platformer.FSM.Character
             base.OnStateEnter();
             controller.isDirectionChageable = true;
             controller.isMovable = false;
+            _fallStartPosY = transform.position.y;
             animator.Play("Fall");
         }
 
@@ -32,7 +38,10 @@ namespace Platformer.FSM.Character
                 return id;
 
             if (controller.isGrounded)
-                nextID = CharacterStateID.Idle;
+            {
+                nextID = _fallStartPosY - transform.position.y >= _landingDistance ?
+                CharacterStateID.Land : CharacterStateID.Idle;
+            }
 
             return nextID;
         }
