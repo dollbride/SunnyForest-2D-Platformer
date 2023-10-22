@@ -9,7 +9,7 @@ namespace Platformer.FSM
 
         public CharacterMachine(CharacterController owner)
         {
-            this.owner = owner;   
+            this.owner = owner;
         }
     }
 }
