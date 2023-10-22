@@ -8,10 +8,10 @@ namespace Platformer.FSM
         public abstract T id { get; }
 
         public virtual bool canExecute => true;
-
-        private bool _hasFixedUpdated;
         // 기본적으로 true지만 이걸 상속받은 자식이 부가적인 조건을 달아서
         // 오버라이드 할 수 있도록 버츄얼 키워드 지정
+
+        private bool _hasFixedUpdated;
 
         public StateBase(StateMachine<T> machine)
         {

@@ -35,7 +35,6 @@ namespace Platformer.FSM
         protected CapsuleCollider2D trigger;
         protected CapsuleCollider2D collision;
 
-
         public CharacterStateBase(CharacterMachine machine) : base(machine)
         {
             this.machine = machine;
@@ -44,9 +43,9 @@ namespace Platformer.FSM
             this.rigidbody = machine.owner.GetComponent<Rigidbody2D>();
             this.animator = machine.owner.GetComponentInChildren<Animator>();
             this.trigger = machine.owner.GetComponent<CapsuleCollider2D>();
-            this.collision = machine.owner.GetComponentsInChildren<CapsuleCollider2D>().FirstOrDefault(x => x.isTrigger == false);
+            this.collision = machine.owner.GetComponentsInChildren<CapsuleCollider2D>()
+                                        .FirstOrDefault(x => x.isTrigger == false);
         }
 
-        
     }
 }
