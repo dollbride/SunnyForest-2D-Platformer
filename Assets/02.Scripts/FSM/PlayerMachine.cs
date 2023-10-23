@@ -6,7 +6,7 @@ namespace Platformer.FSM
     {
         public PlayerMachine(CharacterController owner) : base(owner)
         {
-            
+
         }
     }
 }

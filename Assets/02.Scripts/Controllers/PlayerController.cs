@@ -27,11 +27,10 @@ namespace Platformer.Controllers
             // 겟키는 누르고 있으면 계속 트루
             if (Input.GetKey(KeyCode.LeftAlt))
             {
-                if (machine.ChangeState(CharacterStateID.DownJump) == false &&
-                    machine.ChangeState(CharacterStateID.Jump) == false &&
-                    Input.GetKeyDown(KeyCode.LeftAlt))
+                if (machine.ChangeState(CharacterStateID.DownJump) ||
+                   (machine.currentStateID ==  CharacterStateID.WallSlide == false 
+                    && machine.ChangeState(CharacterStateID.Jump)))
                 {
-                    machine.ChangeState(CharacterStateID.DoubleJump);
                 }
             }
 
@@ -47,6 +46,16 @@ namespace Platformer.Controllers
                 { }
             }
 
+            if (Input.GetKey(KeyCode.RightArrow) ||
+                Input.GetKey(KeyCode.LeftArrow))
+            {
+                machine.ChangeState(CharacterStateID.WallSlide);
+            }
+            else if (machine.currentStateID == CharacterStateID.WallSlide)
+            {
+                machine.ChangeState(CharacterStateID.Idle);
+            }
+
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 machine.ChangeState(CharacterStateID.Crouch);  
@@ -56,6 +65,16 @@ namespace Platformer.Controllers
                 if (machine.currentStateID == CharacterStateID.Crouch)
                     machine.ChangeState(CharacterStateID.Idle);
             }
+
+            //if(Input.GetKeyDown(KeyCode.LeftShift))
+            //{
+            //    machine.ChangeState(CharacterStateID.Dash);
+            //}
+            //else if (Input.GetKeyUp(KeyCode.LeftShift)) // 키를 떼면(KeyUp)
+            //{
+            //    if (machine.currentStateID == CharacterStateID.Dash)
+            //        machine.ChangeState(CharacterStateID.Idle);
+            //}
 
         }
 
