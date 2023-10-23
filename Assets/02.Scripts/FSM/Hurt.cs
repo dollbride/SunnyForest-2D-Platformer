@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Platformer.FSM.Character
 {
-    public class Idle : CharacterStateBase
+    public class Hurt : CharacterStateBase
     {
-        public override CharacterStateID id => CharacterStateID.Idle;
-        public Idle(CharacterMachine machine) : base(machine)
+        public override CharacterStateID id => CharacterStateID.Hurt;
+        public Hurt(CharacterMachine machine) : base(machine)
         {
 
         }
@@ -18,7 +18,11 @@ namespace Platformer.FSM.Character
             controller.isMovable = true;
             controller.hasJumped = false;
             controller.hasDoubleJumped = false;
-            animator.Play("Idle");
+
+            //controller.DepleteHp(this, 5.0f);
+            //Console.WriteLine($"체력: {controller.hpValue}");
+
+            animator.Play("Hurt");
         }
 
         public override CharacterStateID OnStateUpdate()
@@ -28,14 +32,8 @@ namespace Platformer.FSM.Character
             if (nextID == CharacterStateID.None)
                 return id;
 
-            if (Mathf.Abs(controller.horizontal) > 0.0f)
-                nextID = CharacterStateID.Move;
-
-            if (controller.isGrounded == false)
-                nextID = CharacterStateID.Fall;
-
-            if(controller.isAttacked == true)
-                nextID = CharacterStateID.Hurt;
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                nextID = CharacterStateID.Idle;
 
             return nextID;
         }

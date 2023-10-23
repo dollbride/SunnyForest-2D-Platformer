@@ -26,7 +26,7 @@ namespace Platformer.FSM.Character
             controller.isMovable = false;
             controller.hasJumped = false;
             controller.hasDoubleJumped = false;
-            animator.Play("Dash");
+            animator.Play("Jump");
             
             float velocityX = machine.previousStateID == CharacterStateID.WallSlide ? controller.horizontal * controller.moveSpeed : rigidbody.velocity.x;
             rigidbody.velocity = new Vector2(velocityX, 0.0f);

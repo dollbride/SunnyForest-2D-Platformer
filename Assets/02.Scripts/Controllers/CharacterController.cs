@@ -2,6 +2,7 @@ using Platformer.FSM;
 using Platformer.Stats;
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Platformer.Controllers
@@ -124,7 +125,21 @@ namespace Platformer.Controllers
                     onHpMin?.Invoke();
             }
         }
-        
+
+
+        // 에너미를 만났을 때 
+        public Collider2D enemy;
+        [SerializeField] private LayerMask _enemyMask;
+        [SerializeField] private Vector2 _enemyDetectSize;
+        public bool isAttacked
+        {
+            get
+            {
+                enemy = Physics2D.OverlapBox(rigidbody.position,
+                    _enemyDetectSize, 0.0f, _enemyMask);
+                return enemy;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
+            }
+        }
 
         public float hpMax => _hpMax;
 
@@ -140,6 +155,18 @@ namespace Platformer.Controllers
         public event Action<float> onHpDepleted;
         public event Action onHpMax;
         public event Action onHpMin;
+
+        public void RecoverHp(object subject, float amount)
+        {
+            hpValue += amount;
+            onHpRecovered?.Invoke(amount);
+        }
+
+        public void DepleteHp(object subject, float amount)
+        {
+            hpValue -= amount;
+            onHpDepleted?.Invoke(amount);
+        }
 
         private CapsuleCollider2D _col;
 
@@ -157,6 +184,7 @@ namespace Platformer.Controllers
         {
             rigidbody = GetComponent<Rigidbody2D>();
             _col = GetComponent<CapsuleCollider2D>();
+            //hpValue = 100f;
         }
 
         protected virtual void Update()
@@ -251,16 +279,6 @@ namespace Platformer.Controllers
             Gizmos.DrawLine(wallBottomCastCenter, wallBottomCastCenter + Vector2.right * _wallDetectDistance * _direction);
         }
 
-        public void RecoverHp(object subject, float amount)
-        {
-            hpValue += amount;
-            onHpRecovered?.Invoke(amount);
-        }
-
-        public void DepleteHp(object subject, float amount)
-        {
-            hpValue -= amount;
-            onHpDepleted?.Invoke(amount);
-        }
+        
     }
 }
