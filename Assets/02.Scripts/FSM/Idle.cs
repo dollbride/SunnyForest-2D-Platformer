@@ -14,7 +14,7 @@ namespace Platformer.FSM.Character
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            controller.isDirectionChageable = true;
+            controller.isDirectionChangeable = true;
             controller.isMovable = true;
             controller.hasJumped = false;
             controller.hasDoubleJumped = false;
@@ -33,9 +33,6 @@ namespace Platformer.FSM.Character
 
             if (controller.isGrounded == false)
                 nextID = CharacterStateID.Fall;
-
-            if(controller.isAttacked == true)
-                nextID = CharacterStateID.Hurt;
 
             return nextID;
         }

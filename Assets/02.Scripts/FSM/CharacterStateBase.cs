@@ -21,9 +21,10 @@ namespace Platformer.FSM
         Die,
         Attack,
         WallSlide,
+        LadderUp,
+        LadderDown,
         Edge,
-        EdgeClimb,
-        Ladder
+        EdgeClimb
     }
 
     public abstract class CharacterStateBase : StateBase<CharacterStateID>

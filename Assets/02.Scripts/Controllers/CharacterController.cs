@@ -1,4 +1,5 @@
 using Platformer.FSM;
+using Platformer.GameElements;
 using Platformer.Stats;
 using System;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Platformer.Controllers
             get => _direction;
             set
             {
-                if (isDirectionChageable == false)
+                if (isDirectionChangeable == false)
                     return;
 
                 if (value == _direction)
@@ -38,7 +39,7 @@ namespace Platformer.Controllers
             }
         }
         private int _direction;     // 우측 1과 좌측 -1만 존재. x축 좌표랑 상관 없음.
-        public bool isDirectionChageable;
+        public bool isDirectionChangeable;
 
         public abstract float horizontal { get; }
         public abstract float vertical { get; }
@@ -49,6 +50,7 @@ namespace Platformer.Controllers
         [SerializeField] private float _moveSpeed;
         protected Rigidbody2D rigidbody;
 
+        #region Ground Detection
         // 땅 감지 
         public bool isGrounded
         {
@@ -89,7 +91,9 @@ namespace Platformer.Controllers
         [SerializeField] private Vector2 _groundDetectSize;
         [SerializeField] private float _groundBelowDetectDistance;
         [SerializeField] private LayerMask _groundMask;
+        #endregion
 
+        #region Wall Detection
         // 벽 감지
         public bool isWallDetected
         {
@@ -106,6 +110,57 @@ namespace Platformer.Controllers
         [SerializeField] private LayerMask _wallMask;
         [SerializeField] private float _wallDetectDistance;
 
+        #endregion
+
+        #region Ladder Detection
+        
+        public bool isUpLadderDetected
+        {
+            get
+            {
+                Collider2D col = Physics2D.OverlapCircle(transform.position + Vector3.up * _ladderUpDetectOffset,
+                                                         _ladderDetectRadius,
+                                                         _ladderMask);
+                if (col)
+                {
+                    upLadder = col.GetComponent<Ladder>();
+                    return true;
+                }
+
+                upLadder = null;
+                return false;
+            }
+        }
+        public bool isDownLadderDetected
+        {
+            get
+            {
+                // 플레이어가 ladder라는 마스크를 갖고 있는 객체를 오버랩 서클로 감지하면
+                // col에 해당 객체(사다리)를 집어넣고
+                Collider2D col = Physics2D.OverlapCircle(transform.position + Vector3.down * _ladderDownDetectOffset,
+                                                         _ladderDetectRadius,
+                                                         _ladderMask);
+                if (col)
+                {
+                    downLadder = col.GetComponent<Ladder>();
+                    return true;
+                }
+
+                // 사다리를 못 만났다면 널, 폴스 반환하면서 종료
+                downLadder = null;
+                return false;
+            }
+        }
+        public Ladder upLadder;
+        public Ladder downLadder;
+        [SerializeField] private float _ladderUpDetectOffset;
+        [SerializeField] private float _ladderDownDetectOffset;
+        [SerializeField] private float _ladderDetectRadius;
+        [SerializeField] private LayerMask _ladderMask;
+
+        #endregion
+
+        #region Hp
         // 체력 구현 
         public float hpValue
         {
@@ -117,27 +172,13 @@ namespace Platformer.Controllers
                 value = Mathf.Clamp(value, hpMin, hpMax);
                 _hp = value;
 
-                onHpChanged(value);
+                //onHpChanged(value);
 
                 if (value == _hpMax)
                     onHpMax?.Invoke();
                 else if (value == hpMin)
                     onHpMin?.Invoke();
-            }
-        }
-
-
-        // 에너미를 만났을 때 
-        public Collider2D enemy;
-        [SerializeField] private LayerMask _enemyMask;
-        [SerializeField] private Vector2 _enemyDetectSize;
-        public bool isAttacked
-        {
-            get
-            {
-                enemy = Physics2D.OverlapBox(rigidbody.position,
-                    _enemyDetectSize, 0.0f, _enemyMask);
-                return enemy;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
+                Debug.Log($"HP: {value}");
             }
         }
 
@@ -148,7 +189,7 @@ namespace Platformer.Controllers
         public bool invincible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         private float _hp;
-        [SerializeField] private float _hpMax;
+        [SerializeField] private float _hpMax = 100f;
 
         public event Action<float> onHpChanged;
         public event Action<float> onHpRecovered;
@@ -164,9 +205,12 @@ namespace Platformer.Controllers
 
         public void DepleteHp(object subject, float amount)
         {
+            // subject가 데미지를 주는 주체(몬스터, 버튼 등)고 amount가 피해량
             hpValue -= amount;
             onHpDepleted?.Invoke(amount);
         }
+
+        #endregion
 
         private CapsuleCollider2D _col;
 
@@ -184,7 +228,12 @@ namespace Platformer.Controllers
         {
             rigidbody = GetComponent<Rigidbody2D>();
             _col = GetComponent<CapsuleCollider2D>();
-            //hpValue = 100f;
+            hpValue = hpMax;
+        }
+
+        protected virtual void Start()
+        {
+            hpValue = hpMax;
         }
 
         protected virtual void Update()
@@ -200,6 +249,7 @@ namespace Platformer.Controllers
             {
                 direction = horizontal < 0.0f ? DIRECTION_LEFT : DIRECTION_RIGHT;
             }
+
         }
 
         protected virtual void LateUpdate()
@@ -218,11 +268,15 @@ namespace Platformer.Controllers
             rigidbody.position += move * Time.fixedDeltaTime;
         }
 
+
+        #region DrawGizmos
+
         private void OnDrawGizmosSelected()
         {
             DrawGroundDetectGizmos();
             DrawGroundBelowDetectGizmos();
             DrawWallDetectGizmos();
+            DrawLadderDetectGizmos();
         }
 
         private void DrawGroundDetectGizmos()
@@ -278,7 +332,15 @@ namespace Platformer.Controllers
             Gizmos.DrawLine(wallTopCastCenter, wallTopCastCenter + Vector2.right * _wallDetectDistance * _direction);
             Gizmos.DrawLine(wallBottomCastCenter, wallBottomCastCenter + Vector2.right * _wallDetectDistance * _direction);
         }
+        private void DrawLadderDetectGizmos()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(transform.position + Vector3.up * _ladderUpDetectOffset, _ladderDetectRadius);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(transform.position + Vector3.down * _ladderDownDetectOffset, _ladderDetectRadius);
+        }
 
-        
+        #endregion
+
     }
 }

@@ -1,3 +1,4 @@
+using Platformer.FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class EnemyState : MonoBehaviour
 {
     private CapsuleCollider2D _enemyCol;
+    private PlayerMachine _playerMachine;
 
     private void Awake()
     {
@@ -14,7 +16,7 @@ public class EnemyState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //_playerMachine.onHpChanged += DepleteHp(5f);
     }
 
     // Update is called once per frame

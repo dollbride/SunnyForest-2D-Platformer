@@ -32,7 +32,7 @@ namespace Platformer.FSM.Character
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            controller.isDirectionChageable = true;
+            controller.isDirectionChangeable = true;
             controller.isMovable = false;
             controller.hasJumped = true;
             controller.hasDoubleJumped = false;

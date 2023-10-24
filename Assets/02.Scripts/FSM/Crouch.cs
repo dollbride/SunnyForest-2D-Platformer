@@ -13,20 +13,36 @@ namespace Platformer.FSM.Character
                                         controller.isGrounded;
 
         private int _step;
+        private Vector2 _originalColliderOffset;
+        private Vector2 _originalColliderSize;       
+        private Vector2 _crouchedColliderOffset;
+        private Vector2 _crouchedColliderSize;
 
-        public Crouch(CharacterMachine machine) : base(machine)
+        public Crouch(CharacterMachine machine, Vector2 crouchedColliderOffset, Vector2 crouchedColliderSize) : base(machine)
         {
+            _originalColliderOffset = trigger.offset;
+            _originalColliderSize = trigger.size;
+            _crouchedColliderOffset = crouchedColliderOffset;
+            _crouchedColliderSize = crouchedColliderSize;
         }
 
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            controller.isDirectionChageable = false;
+            controller.isDirectionChangeable = false;
             controller.isMovable = false;
-            // 랜딩할 때 미끄러지지 않고 멈추고 싶을 때 추가하는 함수:
             controller.Stop();
+            collision.offset = trigger.offset = _crouchedColliderOffset;
+            collision.size = trigger.size = _crouchedColliderSize;
             animator.Play("CrouchStart");
             _step = 0;
+        }
+
+        public override void OnStateExit()
+        {
+            base.OnStateExit();
+            collision.offset = trigger.offset = _originalColliderOffset;
+            collision.size = trigger.size = _originalColliderSize;
         }
 
         public override CharacterStateID OnStateUpdate()
@@ -42,7 +58,7 @@ namespace Platformer.FSM.Character
                     {
                         if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                         {
-                            animator.Play("CouchIdle");
+                            animator.Play("CrouchIdle");
                             _step++;
                         }
                     }

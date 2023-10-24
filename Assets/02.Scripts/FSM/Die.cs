@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Platformer.FSM.Character
 {
-    public class Land : CharacterStateBase
+    public class Die : CharacterStateBase
     {
-        public override CharacterStateID id => CharacterStateID.Land;
+        public override CharacterStateID id => CharacterStateID.Die;
 
-        public Land (CharacterMachine machine) : base(machine)
+        public Die(CharacterMachine machine) : base(machine)
         {
         }
 
@@ -18,7 +18,10 @@ namespace Platformer.FSM.Character
             controller.isMovable = false;
             // 랜딩할 때 미끄러지지 않고 멈추고 싶을 때 추가하는 함수:
             controller.Stop();
-            animator.Play("Land");
+            controller.enabled = false;
+            trigger.enabled = false;
+            rigidbody.simulated = false;
+            animator.Play("Die");
         }
 
         public override CharacterStateID OnStateUpdate()
@@ -29,7 +32,7 @@ namespace Platformer.FSM.Character
                 return id;
 
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f )
-                nextID = CharacterStateID.Idle;
+                GameObject.Destroy(controller.gameObject);
 
             return nextID;
         }

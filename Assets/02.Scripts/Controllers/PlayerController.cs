@@ -10,14 +10,17 @@ namespace Platformer.Controllers
 
         public override float vertical => Input.GetAxis("Vertical");
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             // 캐릭터 컨트롤러에 있는 캐싱을 하기 위한 변수 machine (캐릭터 머신).
             // 생성(캐싱)은 플레이어머신으로 했지만 machine은 캐릭터 머신을 참조하므로
             // (근데 이렇게 생성해서 쓰는 경우엔 굳이 캐싱이라는 말 안 씀)
             machine = new PlayerMachine(this);
             var machineData = StateMachineDataSheet.GetPlayerData(machine);
             machine.Init(machineData);
+            onHpDepleted += (amount) => machine.ChangeState(CharacterStateID.Hurt);
+            onHpMin += () => machine.ChangeState(CharacterStateID.Die);
         }
 
         protected override void Update()
@@ -28,7 +31,7 @@ namespace Platformer.Controllers
             if (Input.GetKey(KeyCode.LeftAlt))
             {
                 if (machine.ChangeState(CharacterStateID.DownJump) ||
-                   (machine.currentStateID ==  CharacterStateID.WallSlide == false 
+                   (machine.currentStateID == CharacterStateID.WallSlide == false
                     && machine.ChangeState(CharacterStateID.Jump)))
                 {
                 }
@@ -56,25 +59,36 @@ namespace Platformer.Controllers
                 machine.ChangeState(CharacterStateID.Idle);
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.DownArrow))
             {
-                machine.ChangeState(CharacterStateID.Crouch);  
+                if (machine.ChangeState(CharacterStateID.LadderDown) == false &&
+                    machine.ChangeState(CharacterStateID.Crouch) == false)
+                { }
             }
-            else if (Input.GetKeyUp(KeyCode.DownArrow)) // 키를 떼면(KeyUp)
-            {
-                if (machine.currentStateID == CharacterStateID.Crouch)
-                    machine.ChangeState(CharacterStateID.Idle);
-            }
-
-            //if(Input.GetKeyDown(KeyCode.LeftShift))
+            //else if (Input.GetKeyUp(KeyCode.DownArrow)) // 키를 떼면(KeyUp)
             //{
-            //    machine.ChangeState(CharacterStateID.Dash);
-            //}
-            //else if (Input.GetKeyUp(KeyCode.LeftShift)) // 키를 떼면(KeyUp)
-            //{
-            //    if (machine.currentStateID == CharacterStateID.Dash)
+            //    if (machine.currentStateID == CharacterStateID.Crouch || machine.currentStateID == CharacterStateID.LadderDown)
             //        machine.ChangeState(CharacterStateID.Idle);
             //}
+
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                machine.ChangeState(CharacterStateID.Dash);
+            }
+
+            // 사다리 
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                if (machine.ChangeState(CharacterStateID.LadderUp) == false &&
+                    machine.ChangeState(CharacterStateID.Idle) == false)
+                { }
+            }
+            //else if (Input.GetKeyUp(KeyCode.UpArrow)) // 키를 떼면(KeyUp)
+            //{
+            //    if (machine.currentStateID == CharacterStateID.LadderUp)
+            //        machine.ChangeState(CharacterStateID.Idle);
+            //}
+
 
         }
 

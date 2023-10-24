@@ -6,6 +6,17 @@ namespace Platformer.FSM.Character
     public class Hurt : CharacterStateBase
     {
         public override CharacterStateID id => CharacterStateID.Hurt;
+        public override bool canExecute => base.canExecute &&
+            (machine.currentStateID == CharacterStateID.Idle ||
+            machine.currentStateID == CharacterStateID.Move ||
+            machine.currentStateID == CharacterStateID.Jump ||
+            machine.currentStateID == CharacterStateID.DownJump ||
+            machine.currentStateID == CharacterStateID.DoubleJump ||
+            machine.currentStateID == CharacterStateID.Fall ||
+            machine.currentStateID == CharacterStateID.Land ||
+            machine.currentStateID == CharacterStateID.Crouch ||
+            machine.currentStateID == CharacterStateID.WallSlide ||
+            machine.currentStateID == CharacterStateID.Dash);
         public Hurt(CharacterMachine machine) : base(machine)
         {
 
@@ -14,14 +25,9 @@ namespace Platformer.FSM.Character
         public override void OnStateEnter()
         {
             base.OnStateEnter();
-            controller.isDirectionChageable = true;
-            controller.isMovable = true;
-            controller.hasJumped = false;
-            controller.hasDoubleJumped = false;
-
-            //controller.DepleteHp(this, 5.0f);
-            //Console.WriteLine($"체력: {controller.hpValue}");
-
+            controller.isDirectionChangeable = false;
+            controller.isMovable = false;
+            controller.Stop();
             animator.Play("Hurt");
         }
 
