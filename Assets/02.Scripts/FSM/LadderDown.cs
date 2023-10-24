@@ -11,9 +11,12 @@ namespace Platformer.FSM.Character
 
         public override CharacterStateID id => CharacterStateID.LadderDown;
         public override bool canExecute => base.canExecute &&
-                     (machine.currentStateID == CharacterStateID.Idle ||
-                      machine.currentStateID == CharacterStateID.Move) &&
-                      controller.isDownLadderDetected;
+                       (machine.currentStateID == CharacterStateID.Idle ||
+                        machine.currentStateID == CharacterStateID.Move ||
+                        machine.currentStateID == CharacterStateID.Jump ||
+                        machine.currentStateID == CharacterStateID.DoubleJump ||
+                        machine.currentStateID == CharacterStateID.DownJump) &&
+                        controller.isDownLadderDetected;
 
         public LadderDown(CharacterMachine machine, float climbSpeed) : base(machine)
         {
@@ -48,7 +51,7 @@ namespace Platformer.FSM.Character
             if (controller.vertical > 0)
                 nextID = CharacterStateID.LadderUp;
 
-            if (controller.isDownLadderDetected == false)
+            if (transform.position.y <= controller.downLadder.downExit.y)
                 nextID = CharacterStateID.Idle;
 
             return nextID;
@@ -57,8 +60,7 @@ namespace Platformer.FSM.Character
         public override void OnStateFixedUpdate()
         {
             base.OnStateFixedUpdate();
-            if (controller.isDownLadderDetected)
-                rigidbody.position += new Vector2(0.0f, controller.vertical * _climbSpeed);
+            rigidbody.position += new Vector2(0.0f, controller.vertical * _climbSpeed);
         }
     }
 }

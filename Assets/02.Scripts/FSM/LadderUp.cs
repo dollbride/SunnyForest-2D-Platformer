@@ -13,9 +13,12 @@ namespace Platformer.FSM.Character
 
         public override CharacterStateID id => CharacterStateID.LadderUp;
         public override bool canExecute => base.canExecute &&
-                     (machine.currentStateID == CharacterStateID.Idle ||
-                      machine.currentStateID == CharacterStateID.Move) &&
-                      controller.isUpLadderDetected;
+                       (machine.currentStateID == CharacterStateID.Idle ||
+                        machine.currentStateID == CharacterStateID.Move ||
+                        machine.currentStateID == CharacterStateID.Jump ||
+                        machine.currentStateID == CharacterStateID.DoubleJump ||
+                        machine.currentStateID == CharacterStateID.DownJump) &&
+                        controller.isUpLadderDetected;
 
         public LadderUp(CharacterMachine machine, float climbSpeed) : base(machine)
         {
@@ -39,7 +42,7 @@ namespace Platformer.FSM.Character
         {
             base.OnStateExit();
             rigidbody.bodyType = RigidbodyType2D.Dynamic;
-            rigidbody.AddForce(Vector2.up * 3);
+            rigidbody.AddForce(Vector2.up * 3.0f);
             //rigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
             // transform.position.y
             // controller.upLadder.upExit
@@ -55,7 +58,7 @@ namespace Platformer.FSM.Character
             if (controller.vertical < 0)
                 nextID = CharacterStateID.LadderDown;
 
-            if (controller.isUpLadderDetected == false)
+            if ((transform.position.y + 0.18f >= controller.upLadder.upExit.y) || (transform.position.y <= controller.upLadder.downExit.y))
                 nextID = CharacterStateID.Idle;
 
             return nextID;

@@ -59,36 +59,29 @@ namespace Platformer.Controllers
                 machine.ChangeState(CharacterStateID.Idle);
             }
 
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                machine.ChangeState(CharacterStateID.Dash);
+            }
+
+            // 사다리 올라가기
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                machine.ChangeState(CharacterStateID.LadderUp);
+            }
+
+            // 사다리 내려가기 & 수그리기 
             if (Input.GetKey(KeyCode.DownArrow))
             {
                 if (machine.ChangeState(CharacterStateID.LadderDown) == false &&
                     machine.ChangeState(CharacterStateID.Crouch) == false)
                 { }
             }
-            //else if (Input.GetKeyUp(KeyCode.DownArrow)) // 키를 떼면(KeyUp)
-            //{
-            //    if (machine.currentStateID == CharacterStateID.Crouch || machine.currentStateID == CharacterStateID.LadderDown)
-            //        machine.ChangeState(CharacterStateID.Idle);
-            //}
-
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyUp(KeyCode.DownArrow)) // 키를 떼면(KeyUp)
             {
-                machine.ChangeState(CharacterStateID.Dash);
+                if (machine.currentStateID == CharacterStateID.Crouch)
+                    machine.ChangeState(CharacterStateID.Idle);
             }
-
-            // 사다리 
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                if (machine.ChangeState(CharacterStateID.LadderUp) == false &&
-                    machine.ChangeState(CharacterStateID.Idle) == false)
-                { }
-            }
-            //else if (Input.GetKeyUp(KeyCode.UpArrow)) // 키를 떼면(KeyUp)
-            //{
-            //    if (machine.currentStateID == CharacterStateID.LadderUp)
-            //        machine.ChangeState(CharacterStateID.Idle);
-            //}
-
 
         }
 
