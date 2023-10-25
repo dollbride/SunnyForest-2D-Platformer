@@ -10,6 +10,9 @@ namespace Platformer.Controllers
 {
     public abstract class CharacterController : MonoBehaviour, IHp
     {
+        public float damageMin;    //최소공
+        public float damageMax;    //최대공
+
         public const int DIRECTION_RIGHT = 1;
         public const int DIRECTION_LEFT = -1;
 

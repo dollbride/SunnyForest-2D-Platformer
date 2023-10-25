@@ -64,6 +64,12 @@ namespace Platformer.Controllers
                 machine.ChangeState(CharacterStateID.Dash);
             }
 
+            // 슬라이드
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                machine.ChangeState(CharacterStateID.Slide);
+            }
+
             // 사다리 올라가기
             if (Input.GetKey(KeyCode.UpArrow))
             {

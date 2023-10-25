@@ -17,6 +17,7 @@ namespace Platformer.FSM
         Land,
         Crouch,
         Dash,
+        Slide,
         Hurt,
         Die,
         Attack,
