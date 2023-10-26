@@ -1,5 +1,6 @@
 ﻿using Platformer.FSM;
 using Platformer.Stats;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -37,16 +38,24 @@ namespace Platformer.Controllers
         private float _behaviourTimer;
 
         private CapsuleCollider2D _trigger;
+        private Rigidbody2D _rigidbody;
 
         protected override void Awake()
         {
             base.Awake();
             _trigger = GetComponent<CapsuleCollider2D>();
+            _rigidbody = GetComponent<Rigidbody2D>();
         }
 
         protected override void Update()
         {
             UpdateAI();
+            if (isGroundedForward == false)
+            {
+                Console.WriteLine($"달팽이 떨어짐");
+                _rigidbody.velocity = Vector3.zero;
+                direction *= -1;
+            }
 
             base.Update();
         }
@@ -55,6 +64,22 @@ namespace Platformer.Controllers
         {
             base.FixedUpdate();
             //이동하려는 위치가 유효하지 않으면 제자리 
+            if (isGrounded == false)
+            {
+                Console.WriteLine($"달팽이 떨어짐");
+                _rigidbody.velocity = Vector3.zero;
+                direction *= -1;
+            }
+        }
+
+        public bool isGroundedForward
+        {
+            get
+            {
+                ground = Physics2D.OverlapBox(rigidbody.position + new Vector2(-0.12f, 0.0f) * direction,
+                    new Vector2(0.04f, 0.02f), 0.0f, _groundMask);
+                return ground;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
+            }
         }
 
         private void UpdateAI()

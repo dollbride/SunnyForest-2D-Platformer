@@ -93,7 +93,7 @@ namespace Platformer.Controllers
         [SerializeField] private Vector2 _groundDetectOffset;
         [SerializeField] private Vector2 _groundDetectSize;
         [SerializeField] private float _groundBelowDetectDistance;
-        [SerializeField] private LayerMask _groundMask;
+        [SerializeField] public LayerMask _groundMask;
         #endregion
 
         #region Wall Detection
