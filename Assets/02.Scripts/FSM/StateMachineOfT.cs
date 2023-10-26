@@ -25,7 +25,10 @@ namespace Platformer.FSM
 
         public void UpdateState()
         {
-            ChangeState(states[currentStateID].OnStateUpdate());
+            // 현재 상태를 업데이트하고 그 상태가 넘겨준 다음 상태로
+            T nextID = states[currentStateID].OnStateUpdate();
+            // 바꾼다
+            ChangeState(nextID);
         }
 
         public void FixedUpdateState()

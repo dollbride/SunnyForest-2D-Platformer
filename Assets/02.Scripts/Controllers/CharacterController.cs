@@ -172,16 +172,16 @@ namespace Platformer.Controllers
             {
                 if (value == _hp)
                     return;
+
                 value = Mathf.Clamp(value, hpMin, hpMax);
                 _hp = value;
 
-                //onHpChanged(value);
+                onHpChanged?.Invoke(value);
 
-                if (value == _hpMax)
+                if (value == hpMax)
                     onHpMax?.Invoke();
                 else if (value == hpMin)
                     onHpMin?.Invoke();
-                Debug.Log($"HP: {value}");
             }
         }
 
@@ -189,11 +189,11 @@ namespace Platformer.Controllers
 
         public float hpMin => 0f;
 
-        public bool invincible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool invincible { get; set; }
 
         private float _hp;
-        [SerializeField] private float _hpMax = 100f;
 
+        [SerializeField] private float _hpMax;
         public event Action<float> onHpChanged;
         public event Action<float> onHpRecovered;
         public event Action<float> onHpDepleted;
@@ -206,9 +206,8 @@ namespace Platformer.Controllers
             onHpRecovered?.Invoke(amount);
         }
 
-        public void DepleteHp(object subject, float amount)
+        public virtual void DepleteHp(object subject, float amount)
         {
-            // subject가 데미지를 주는 주체(몬스터, 버튼 등)고 amount가 피해량
             hpValue -= amount;
             onHpDepleted?.Invoke(amount);
         }
@@ -220,6 +219,12 @@ namespace Platformer.Controllers
         public bool hasJumped;
         public bool hasDoubleJumped;
         protected CharacterMachine machine;
+
+        public void Knockback(Vector2 force)
+        {
+            rigidbody.velocity = Vector2.zero;
+            rigidbody.AddForce(force, ForceMode2D.Impulse);
+        }
 
         public void Stop()
         {
@@ -274,7 +279,7 @@ namespace Platformer.Controllers
 
         #region DrawGizmos
 
-        private void OnDrawGizmosSelected()
+        protected virtual void OnDrawGizmosSelected()
         {
             DrawGroundDetectGizmos();
             DrawGroundBelowDetectGizmos();

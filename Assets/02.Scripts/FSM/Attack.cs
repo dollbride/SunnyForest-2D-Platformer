@@ -1,7 +1,10 @@
 ﻿using Platformer.Animations;
 using Platformer.Stats;
+using Platformer.Datum;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 namespace Platformer.FSM.Character
 {
@@ -15,22 +18,24 @@ namespace Platformer.FSM.Character
                 if (base.canExecute == false)
                     return false;
 
-                // 콤보스택이 쌓여있는 상황에서 마지막 공격이 끝났던 시각으로부터
-                // 경과된 시간이 콤보 초기화 시간을 넘어갔으면 콤보 안됨 
-                float elapsedTime = Time.time - _exitTimeMark;  // 마지막 공격 이후 경과된 시간
+                // 콤보스택이 쌓여있는 상황에서
+                // 공격이 끝났던 시간부터 경과된 시간이 콤보 초기화시간을 넘어갔으면 콤보 안됨
+                float elapsedTime = Time.time - _exitTimeMark; // 마지막 공격이후 경과된 시간
                 if (_comboStack > 0 &&
-                    elapsedTime > _comboResetTime)
+                    elapsedTime >= _comboResetTime)
                 {
                     _comboStack = 0;
                     return false;
                 }
 
+                // 현재 스택이 최대치를 넘으면 콤보 안됨
                 if (_comboStack > _comboStackMax)
                 {
                     return false;
                 }
 
-                // 첫타는 무조건 오케이, 후속타는 이전 공격 히트 판정 이후 오케이 
+                // 첫타는 무조건 ㅇㅋ 
+                // 후속타는 이전 공격 히트판정 이후 ㅇㅋ
                 if ((_comboStack == 0 || (_comboStack > 0 && _hasHit)) &&
                     (machine.currentStateID == CharacterStateID.Idle ||
                      machine.currentStateID == CharacterStateID.Move ||
@@ -42,45 +47,39 @@ namespace Platformer.FSM.Character
                 {
                     return true;
                 }
+
                 return false;
             }
         }
 
-        private int _comboStackMax;
-        private int _comboStack;
-        private float _comboResetTime;
-        private float _exitTimeMark;    // 마지막 공격 끝난 시간
-        private bool _hasHit;           // 현재 공격이 히트 판정 되었는지
+        private int _comboStackMax; // 최대 콤보 스택
+        private int _comboStack; // 현재 콤보 스택
+        private float _comboResetTime; // 공격 이후 콤보 초기화 시간
+        private float _exitTimeMark; // 마지막 공격 끝난 시간
+        private bool _hasHit; // 현재 공격 히트판정 됐는지 ?
 
-        public class AttackSetting
-        {
-            public int targetMax;           // 최대 타게팅 수
-            public LayerMask targetMask;    // 타겟 검출 마스크
-            public float damageGain;        // 공격 계수
-            public Vector2 castCenter;      // 타겟 감지 형상(사각형) 범위의 중심
-            public Vector2 castSize;        // 타겟 감지 형상(사각형)의 크기
-            public float castDistance;      // 타겟 감지 형상(사각형)의 빔 거리 
-        }
 
-        private AttackSetting[] _attackSettings;
+        private SkillCastSetting[] _attackSettings;
         private List<IHp> _targets = new List<IHp>();
         private CharacterAnimationEvents _animationEvents;
 
-        public Attack(CharacterMachine machine, AttackSetting[] attackSettings, float comboResetTime) : base(machine)
+        public Attack(CharacterMachine machine, float comboResetTime, SkillCastSetting[] attackSettings)
+            : base(machine)
         {
             _attackSettings = attackSettings;
-            _comboStackMax = attackSettings.Length;
+            _comboStackMax = attackSettings.Length - 1;
             _comboResetTime = comboResetTime;
+
             _animationEvents = animator.GetComponent<CharacterAnimationEvents>();
-            // event 한정자를 적지 않았기 때문에 += 대신 그냥 = 쓰면 됨 
             _animationEvents.onHit = () =>
             {
                 foreach (var target in _targets)
                 {
                     if (target == null)
                         continue;
+
                     float damage = Random.Range(controller.damageMin, controller.damageMax) * _attackSettings[_comboStack - 1].damageGain;
-                    target.DepleteHp(controller, damage);
+                    target.DepleteHp(transform, damage);
                 }
                 _hasHit = true;
             };
@@ -90,10 +89,10 @@ namespace Platformer.FSM.Character
         {
             base.OnStateEnter();
             controller.isDirectionChangeable = false;
-            controller.isMovable = controller.isGrounded;
+            controller.isMovable = false; //controller.isGrounded;
             _hasHit = false;
 
-            AttackSetting setting = _attackSettings[_comboStack - 1];
+            SkillCastSetting setting = _attackSettings[_comboStack];
             RaycastHit2D[] hits =
                 Physics2D.BoxCastAll(origin: rigidbody.position + new Vector2(setting.castCenter.x * controller.direction, setting.castCenter.y),
                                      size: setting.castSize,
@@ -101,26 +100,8 @@ namespace Platformer.FSM.Character
                                      direction: Vector2.right * controller.direction,
                                      distance: setting.castDistance,
                                      layerMask: setting.targetMask);
-            Vector2 origin = rigidbody.position + new Vector2(setting.castCenter.x * controller.direction, setting.castCenter.y);
-            Vector2 size = setting.castSize;
-            float distance = setting.castDistance;
 
-            // 왼쪽 위 -> 오른쪽 위
-            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, +size.y / 2.0f),
-                           origin + new Vector2(+size.x / 2.0f * controller.direction, +size.y / 2.0f) + Vector2.right * controller.direction * distance);
-            // 왼쪽 아래 -> 오른쪽 아래
-            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, -size.y / 2.0f),
-                           origin + new Vector2(+size.x / 2.0f * controller.direction, -size.y / 2.0f) + Vector2.right * controller.direction * distance);
-            // 왼쪽 위 -> 왼쪽 아래 
-            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, +size.y / 2.0f),
-                           origin + new Vector2(-size.x / 2.0f * controller.direction, -size.y / 2.0f));
-            // 오른 위 -> 오른쪽 아래
-            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, -size.y / 2.0f),
-                           origin + new Vector2(+size.x / 2.0f * controller.direction, +size.y / 2.0f) + Vector2.right * controller.direction * distance);
-
-
-
-            // 전체 감지된 적 중에서 최대 타겟 수까지만 대상으로 등록
+            // 전체 감지된 아이들중에서 최대 타겟 수 까지만 대상으로 등록
             _targets.Clear();
             for (int i = 0; i < hits.Length; i++)
             {
@@ -131,10 +112,35 @@ namespace Platformer.FSM.Character
                     _targets.Add(target);
             }
 
-            animator.SetFloat("comboStack", _comboStack++);
+            animator.SetFloat("comboStack", _comboStack++); //애니메이션 파라미터 세팅 및 콤보스택 쌓기
             animator.Play("Attack");
+
+            Vector2 origin = rigidbody.position + new Vector2(setting.castCenter.x * controller.direction, setting.castCenter.y);
+            Vector2 size = setting.castSize;
+            float distance = setting.castDistance;
+            // L-T -> R-T
+            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, +size.y / 2.0f),
+                           origin + new Vector2(+size.x / 2.0f * controller.direction, +size.y / 2.0f) + Vector2.right * controller.direction * distance,
+                           Color.red,
+                           animator.GetCurrentAnimatorStateInfo(0).length);
+            // L-B -> R-B
+            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, -size.y / 2.0f),
+                           origin + new Vector2(+size.x / 2.0f * controller.direction, -size.y / 2.0f) + Vector2.right * controller.direction * distance,
+                           Color.red,
+                           animator.GetCurrentAnimatorStateInfo(0).length);
+            // L-T -> L-B
+            Debug.DrawLine(origin + new Vector2(-size.x / 2.0f * controller.direction, +size.y / 2.0f),
+                           origin + new Vector2(-size.x / 2.0f * controller.direction, -size.y / 2.0f),
+                           Color.red,
+                           animator.GetCurrentAnimatorStateInfo(0).length);
+            // R-T -> R-B
+            Debug.DrawLine(origin + new Vector2(+size.x / 2.0f * controller.direction, +size.y / 2.0f) + Vector2.right * controller.direction * distance,
+                           origin + new Vector2(+size.x / 2.0f * controller.direction, -size.y / 2.0f) + Vector2.right * controller.direction * distance,
+                           Color.red,
+                           animator.GetCurrentAnimatorStateInfo(0).length);
+
         }
-        
+
         public override void OnStateExit()
         {
             base.OnStateExit();
@@ -151,8 +157,10 @@ namespace Platformer.FSM.Character
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 nextID = CharacterStateID.Idle;
 
+            if (controller.isGrounded)
+                controller.move = new Vector2(controller.horizontal * 0.1f, 0.0f);
+
             return nextID;
         }
-
     }
 }
