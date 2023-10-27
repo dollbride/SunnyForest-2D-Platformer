@@ -36,6 +36,7 @@ namespace Platformer.Controllers
         [SerializeField] private float _behaviourTimeMin;
         [SerializeField] private float _behaviourTimeMax;
         private float _behaviourTimer;
+        [SerializeField] private float _slopeAngle = 45.0f;
 
         private CapsuleCollider2D _trigger;
         private Rigidbody2D _rigidbody;
@@ -44,41 +45,51 @@ namespace Platformer.Controllers
         {
             base.Awake();
             _trigger = GetComponent<CapsuleCollider2D>();
-            _rigidbody = GetComponent<Rigidbody2D>();
+            _ai = AI.Think;
         }
 
         protected override void Update()
         {
             UpdateAI();
-            if (isGroundedForward == false)
-            {
-                Console.WriteLine($"달팽이 떨어짐");
-                _rigidbody.velocity = Vector3.zero;
-                direction *= -1;
-            }
-
             base.Update();
         }
 
         protected override void FixedUpdate()
         {
-            base.FixedUpdate();
-            //이동하려는 위치가 유효하지 않으면 제자리 
-            if (isGrounded == false)
+            //이동하려는 위치가 유효하지 않으면 제자리
+            // => (기반 타입의) FixedUpdate에서 Move() 호출 안 하게 만들기
+            // => Move() 자체를 앞 땅 감지 조건 안에 넣어버리기 
+            if (machine.currentStateID != CharacterStateID.Move)
             {
-                Console.WriteLine($"달팽이 떨어짐");
-                _rigidbody.velocity = Vector3.zero;
-                direction *= -1;
+                base.FixedUpdate(); // Move() 실행
             }
+            // 이동 중일 땐 
+            else
+            {
+                machine.FixedUpdateState();
+                // 삼각함수를 이용해서 레이캐스트 할 높이 구하기:
+                Vector2 expected = rigidbody.position + move * Time.fixedDeltaTime; //예상 위치
+                float distanceX = Mathf.Abs(expected.x - rigidbody.position.x); // 밑변
+                float height = distanceX * MathF.Tan(_slopeAngle * Mathf.Deg2Rad); // 높이 = 밑변 * 탄젠트세타
+                Vector2 origin = expected + Vector2.up * height;
+                RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, height * 2.0f, groundMask);
+                if (hit.collider)
+                {
+                    rigidbody.position = hit.point;
+                }
+            }
+
+
         }
 
         public bool isGroundedForward
         {
             get
             {
-                ground = Physics2D.OverlapBox(rigidbody.position + new Vector2(-0.12f, 0.0f) * direction,
-                    new Vector2(0.04f, 0.02f), 0.0f, _groundMask);
+                ground = Physics2D.OverlapBox(rigidbody.position + new Vector2(0.15f * direction, 0.0f),
+                    new Vector2(0.04f, 0.02f), 0.0f, groundMask);
                 return ground;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
+
             }
         }
 
@@ -94,6 +105,7 @@ namespace Platformer.Controllers
                     Collider2D col
                         = Physics2D.OverlapCircle(rigidbody.position, _targetDetectRange, _targetMask);
 
+
                     if (col)
                         _target = col.transform;
                 }
@@ -108,16 +120,50 @@ namespace Platformer.Controllers
             switch (_ai)
             {
                 case AI.Think:
+                    {
+                        _ai = AI.ExectueRandomBehaviour;
+                    }
                     break;
                 case AI.ExectueRandomBehaviour:
+                    {
+                        //Range의 정수 범위는 Max에서 하나 적은 것까지 
+                        var nextID = _behaviours[Random.Range(0, _behaviours.Count)];
+                        if (machine.ChangeState(nextID))
+                        {
+                            _behaviourTimer = Random.Range(_behaviourTimeMin, _behaviourTimeMax);
+                            _horizontal = Random.Range(-1.0f, 1.0f);
+                            _ai = AI.WaitUntilBehaviour;
+                        }
+                        else
+                        {
+                            _ai = AI.Think;
+                        }
+                    }
                     break;
                 case AI.WaitUntilBehaviour:
+                    {
+                        if (_behaviourTimer <= 0)
+                        {
+                            _ai = AI.Think;
+                        }
+                        else
+                        {
+                            _behaviourTimer -= Time.deltaTime;
+                        }
+                    }
                     break;
                 case AI.Follow:
                     {
                         // 타겟 없으면 다시생각해
                         if (_target == null)
                         {
+                            _ai = AI.Think;
+                            return;
+                        }
+
+                        if (Vector2.Distance(transform.position, _target.position) > _targetDetectRange)
+                        {
+                            _target = null;
                             _ai = AI.Think;
                             return;
                         }
@@ -183,6 +229,10 @@ namespace Platformer.Controllers
 
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, _attackRange);
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireCube((transform.position + new Vector3(0.15f * direction, 0.0f, 0.0f)), new Vector3(0.04f, 0.02f, 0.0f));
+
         }
     }
 }

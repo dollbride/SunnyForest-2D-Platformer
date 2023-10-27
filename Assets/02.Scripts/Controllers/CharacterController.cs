@@ -1,6 +1,8 @@
+using Platformer.Effetcs;
 using Platformer.FSM;
 using Platformer.GameElements;
 using Platformer.Stats;
+using Platformer.Test;
 using System;
 using System.Linq;
 using Unity.VisualScripting;
@@ -8,6 +10,8 @@ using UnityEngine;
 
 namespace Platformer.Controllers
 {
+    //[RequireComponent(typeof(PoolOfDamagePopUp))]
+
     public abstract class CharacterController : MonoBehaviour, IHp
     {
         public float damageMin;    //최소공
@@ -39,9 +43,11 @@ namespace Platformer.Controllers
                 }
                 else
                     throw new System.Exception("[CharacterController] : Wrong direction");
+                onDirectionChanged?.Invoke(_direction);
             }
         }
         private int _direction;     // 우측 1과 좌측 -1만 존재. x축 좌표랑 상관 없음.
+        public event Action<int> onDirectionChanged;
         public bool isDirectionChangeable;
 
         public abstract float horizontal { get; }
@@ -60,7 +66,7 @@ namespace Platformer.Controllers
             get
             {
                 ground = Physics2D.OverlapBox(rigidbody.position + _groundDetectOffset, 
-                    _groundDetectSize, 0.0f, _groundMask);
+                    _groundDetectSize, 0.0f, groundMask);
                 return ground;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
             }
         }
@@ -76,7 +82,7 @@ namespace Platformer.Controllers
                                          angle: 0.0f,
                                          direction: Vector2.down,
                                          distance: _groundBelowDetectDistance,
-                                         layerMask: _groundMask);
+                                         layerMask: groundMask);
 
                 RaycastHit2D hit = default;
                 if (hits.Length > 0)
@@ -93,7 +99,7 @@ namespace Platformer.Controllers
         [SerializeField] private Vector2 _groundDetectOffset;
         [SerializeField] private Vector2 _groundDetectSize;
         [SerializeField] private float _groundBelowDetectDistance;
-        [SerializeField] public LayerMask _groundMask;
+        [SerializeField] protected LayerMask groundMask;
         #endregion
 
         #region Wall Detection
@@ -199,6 +205,7 @@ namespace Platformer.Controllers
         public event Action<float> onHpDepleted;
         public event Action onHpMax;
         public event Action onHpMin;
+        public PoolOfDamagePopUp poolOfDamagePopUp;
 
         public void RecoverHp(object subject, float amount)
         {
@@ -210,6 +217,11 @@ namespace Platformer.Controllers
         {
             hpValue -= amount;
             onHpDepleted?.Invoke(amount);
+            //Instantiate(damagePopUp, transform.position + Vector3.up * 0.5f, Quaternion.identity)
+            //    .Show(amount); // Instanticate로 만든 damagePopUp 객체의 Show() 호출
+            DamagePopUp damagePopUp = poolOfDamagePopUp.pool.Get();
+            damagePopUp.transform.position = transform.position + Vector3.up * 0.5f;
+            damagePopUp.Show(amount);
         }
 
         #endregion
@@ -241,7 +253,6 @@ namespace Platformer.Controllers
 
         protected virtual void Start()
         {
-            hpValue = hpMax;
         }
 
         protected virtual void Update()
@@ -303,7 +314,7 @@ namespace Platformer.Controllers
                                      angle: 0.0f,
                                      direction: Vector2.down,
                                      distance: _groundBelowDetectDistance,
-                                     layerMask: _groundMask);
+                                     layerMask: groundMask);
 
             RaycastHit2D hit = default;
             if (hits.Length > 0)
