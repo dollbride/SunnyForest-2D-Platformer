@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SlugSpawner : MonoBehaviour
+public class SpawnerInstantiate : MonoBehaviour
 {
     public GameObject prefabToSpawn;    // «¡∏Æ∆’ µÓ∑œ
     public string prefabName;                      // «¡∏Æ∆’ ¿Ã∏ß
@@ -35,7 +35,7 @@ public class SlugSpawner : MonoBehaviour
                 GameObject currentEntity = Instantiate(prefabToSpawn, downHit.point, Quaternion.identity);
                 currentEntity.name = prefabName + instanceNumber;
             }
-            
+
             instanceNumber++;
 
         }

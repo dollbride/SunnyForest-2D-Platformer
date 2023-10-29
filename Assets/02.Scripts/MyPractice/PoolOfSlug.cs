@@ -40,12 +40,20 @@ namespace Platformer.Controllers
         [SerializeField] private Vector3 spawnAreaBoxCenter;
         [SerializeField] private Vector3 spawnAreaBoxSize;
         [SerializeField] private LayerMask groundMask;
+        SlugController[] slugsPool;
 
         int instanceNumber = 1;
 
         void Start()
         {
             spawnPoints = new Vector3[_countMax];
+
+            slugsPool = new SlugController[_countMax];
+            for (int i = 0; i < _countMax; i++)
+            {
+                slugsPool[i] = CreatedPooledItem();
+                OnReturnToPool(slugsPool[i]);
+            }
             SpawnEntities();
         }
 
@@ -61,14 +69,15 @@ namespace Platformer.Controllers
                 RaycastHit2D downHit = Physics2D.Raycast(castStartPos, Vector2.down, 1.5f, groundMask);
                 if (downHit)
                 {
-                    SlugController item = CreatedPooledItem();
-                    item.transform.position = downHit.point;
-                    item.name = prefabName + instanceNumber;
+                    //OnGetFromPool(slugsPool[i]);
+                    pool.Get(out slugsPool[i]);
+                    slugsPool[i].transform.position = downHit.point;
+                    slugsPool[i].name = prefabName + instanceNumber;
                 }
                 instanceNumber++;
             }
         }
-    
+
         public IObjectPool<SlugController> pool
         {
             get
@@ -94,7 +103,7 @@ namespace Platformer.Controllers
                 return _pool;
             }
         }
-        
+
 
         private SlugController CreatedPooledItem()
         {
@@ -108,12 +117,12 @@ namespace Platformer.Controllers
             slugController.gameObject.SetActive(true);
         }
 
-        private void OnReturnToPool(SlugController slugController)
+        public void OnReturnToPool(SlugController slugController)
         {
             slugController.gameObject.SetActive(false);
         }
 
-        private void OnDestroyPooledItem(SlugController slugController)
+        public void OnDestroyPooledItem(SlugController slugController)
         {
             Destroy(slugController.gameObject);
         }

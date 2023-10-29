@@ -21,7 +21,7 @@ namespace Platformer.FSM
                 { CharacterStateID.Crouch, new Crouch(machine, new Vector2(0.0f, 0.06f), new Vector2(0.12f, 0.15f)) },
                 { CharacterStateID.Land, new Land(machine) },
                 { CharacterStateID.LadderUp, new LadderUp(machine) },
-                { CharacterStateID.LadderDown, new LadderDown_my(machine, 1.0f) },
+                { CharacterStateID.LadderDown, new LadderDown(machine) },
                 { CharacterStateID.WallSlide, new WallSlide(machine) },
                 { CharacterStateID.Dash, new Dash(machine, 0.8f) },
                 { CharacterStateID.Slide, new Slide(machine, 0.8f, new Vector2(0.0f, 0.06f), new Vector2(0.12f, 0.15f)) },

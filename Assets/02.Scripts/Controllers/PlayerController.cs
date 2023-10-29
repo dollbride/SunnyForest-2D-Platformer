@@ -44,7 +44,7 @@ namespace Platformer.Controllers
                     invincible = false;
             }
 
-
+            #region 키입력
             if (Input.GetKey(KeyCode.LeftAlt))
             {
                 if (machine.ChangeState(CharacterStateID.DownJump) ||
@@ -107,6 +107,8 @@ namespace Platformer.Controllers
             {
                 machine.ChangeState(CharacterStateID.Attack);
             }
+            #endregion
+
         }
 
         public override void DepleteHp(object subject, float amount)

@@ -4,6 +4,9 @@ namespace Platformer.Controllers
 {
     public class SlugController : EnemyController
     {
+        //PoolOfSlug.PooledItem pooledItem;
+        //PoolOfSlug poolOfSlug;
+        
         protected override void Start()
         {
             base.Start();
@@ -12,6 +15,9 @@ namespace Platformer.Controllers
             machine.Init(machineData);
             onHpDepleted += (amount) => machine.ChangeState(CharacterStateID.Hurt);
             onHpMin += () => machine.ChangeState(CharacterStateID.Die);
+            //onHpMin += () => pooledItem.ReturnToPool();
+            //onHpMin += () => poolOfSlug.OnDestroyPooledItem(this);
+            onHpMin += () => gameObject.SetActive(false);
         }
     }
 }

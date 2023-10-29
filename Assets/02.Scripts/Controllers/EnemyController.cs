@@ -82,17 +82,6 @@ namespace Platformer.Controllers
 
         }
 
-        public bool isGroundedForward
-        {
-            get
-            {
-                ground = Physics2D.OverlapBox(rigidbody.position + new Vector2(0.15f * direction, 0.0f),
-                    new Vector2(0.04f, 0.02f), 0.0f, groundMask);
-                return ground;  // Unity 오브젝트는 결과가 null이어도 bool 타입(false)으로 반환 가능
-
-            }
-        }
-
         private void UpdateAI()
         {
             // 자동 따라가기 옵션이 켜져있는데
@@ -195,7 +184,7 @@ namespace Platformer.Controllers
                     break;
             }
         }
-
+        
         public override void DepleteHp(object subject, float amount)
         {
             base.DepleteHp(subject, amount);
@@ -206,6 +195,7 @@ namespace Platformer.Controllers
 
             if (subject.GetType().Equals(typeof(Transform)))
                 Knockback(Vector2.right * (((Transform)subject).position.x - transform.position.x < 0 ? 1.0f : -1.0f) * 1.0f);
+
         }
 
         private void OnTriggerStay2D(Collider2D collision)
