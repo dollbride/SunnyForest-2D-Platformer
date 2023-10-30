@@ -32,7 +32,7 @@ namespace Platformer.FSM.Character
                 return id;
 
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f )
-                GameObject.Destroy(controller.gameObject);
+                controller.gameObject.SetActive(false);
 
             return nextID;
         }

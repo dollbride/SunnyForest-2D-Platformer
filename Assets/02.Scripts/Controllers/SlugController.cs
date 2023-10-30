@@ -15,9 +15,6 @@ namespace Platformer.Controllers
             machine.Init(machineData);
             onHpDepleted += (amount) => machine.ChangeState(CharacterStateID.Hurt);
             onHpMin += () => machine.ChangeState(CharacterStateID.Die);
-            //onHpMin += () => pooledItem.ReturnToPool();
-            //onHpMin += () => poolOfSlug.OnDestroyPooledItem(this);
-            onHpMin += () => gameObject.SetActive(false);
         }
     }
 }

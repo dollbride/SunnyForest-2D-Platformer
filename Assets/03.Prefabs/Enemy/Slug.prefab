@@ -216,7 +216,7 @@ MonoBehaviour:
   _targetMask:
     serializedVersion: 2
     m_Bits: 1024
-  _behaviours: 
+  _behaviours: 020000000100000003000000
   _behaviourTimeMin: 0.5
   _behaviourTimeMax: 2
   _slopeAngle: 45

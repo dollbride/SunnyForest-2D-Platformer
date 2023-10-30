@@ -1,4 +1,6 @@
-﻿using Platformer.FSM;
+﻿using Platformer.Effetcs;
+using Platformer.FSM;
+using Platformer.GameElements;
 using Platformer.Stats;
 using System;
 using System.Collections.Generic;
@@ -39,8 +41,7 @@ namespace Platformer.Controllers
         [SerializeField] private float _slopeAngle = 45.0f;
 
         private CapsuleCollider2D _trigger;
-        private Rigidbody2D _rigidbody;
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -196,6 +197,12 @@ namespace Platformer.Controllers
             if (subject.GetType().Equals(typeof(Transform)))
                 Knockback(Vector2.right * (((Transform)subject).position.x - transform.position.x < 0 ? 1.0f : -1.0f) * 1.0f);
 
+            // 데미지팝업 pool들을 관리하는 매니저를 통해서
+            // 에너미용 데미지팝업 풀을 가져오고, 가져온 풀에서 Item을 가져온다.
+            DamagePopUp damagePopUp = PoolManager<DamagePopUp>.instance
+                                     .Get<DamagePopUp>(PoolTag.DamagePopUp_Enemy);
+            damagePopUp.transform.position = transform.position + Vector3.up * 0.5f;
+            damagePopUp.Show(amount);
         }
 
         private void OnTriggerStay2D(Collider2D collision)

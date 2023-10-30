@@ -205,7 +205,6 @@ namespace Platformer.Controllers
         public event Action<float> onHpDepleted;
         public event Action onHpMax;
         public event Action onHpMin;
-        public PoolOfDamagePopUp poolOfDamagePopUp;
 
         public void RecoverHp(object subject, float amount)
         {
@@ -219,9 +218,6 @@ namespace Platformer.Controllers
             onHpDepleted?.Invoke(amount);
             //Instantiate(damagePopUp, transform.position + Vector3.up * 0.5f, Quaternion.identity)
             //    .Show(amount); // Instanticate로 만든 damagePopUp 객체의 Show() 호출
-            DamagePopUp damagePopUp = poolOfDamagePopUp.pool.Get();
-            damagePopUp.transform.position = transform.position + Vector3.up * 0.5f;
-            damagePopUp.Show(amount);
         }
 
         #endregion
@@ -231,6 +227,16 @@ namespace Platformer.Controllers
         public bool hasJumped;
         public bool hasDoubleJumped;
         protected CharacterMachine machine;
+
+        // 풀에서 꺼내 쓸 때마다 체력, 알파 값 등을 초기화 해줄 때 쓰는 함수
+        public virtual void SetUp()
+        {
+            hpValue = hpMax;
+            var renderer = GetComponentInChildren<SpriteRenderer>();
+            Color color = renderer.color;
+            color.a = 1.0f;
+            renderer.color = color;
+        }
 
         public void Knockback(Vector2 force)
         {
