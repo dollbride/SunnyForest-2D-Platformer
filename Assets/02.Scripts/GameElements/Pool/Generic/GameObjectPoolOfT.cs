@@ -1,36 +1,35 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Platformer.GameElements
+namespace Platformer.GameElements.Pool.Generic
 {
-    public enum PoolTag
-    {
-        None,
-        DamagePopUp_Player,
-        DamagePopUp_Enemy,
-        Enemy_Slug,
-    }
-    
     public class GameObjectPool<T> : MonoBehaviour
         where T : MonoBehaviour
     {
         new public PoolTag tag;
 
-        public class PooledItem : MonoBehaviour
-        {
-            public IObjectPool<T> pool;
-            private T _item;
+        //public class PooledItem : MonoBehaviour
+        //{
+        //    public IObjectPool<T> pool;
+        //    private T _item;
 
-            private void Awake()
-            {
-                _item = GetComponent<T>();
-            }
+        //    private void Awake()
+        //    {
+        //        _item = GetComponent<T>();
+        //    }
 
-            public void ReturnToPool()
-            {
-                pool.Release(_item);
-            }
-        }
+        //    // OnDisable() : 모노비헤이비어가 비활성화 될 때 호출되는 함수
+        //    private void OnDisable()
+        //    {
+        //        ReturnToPool();
+        //    }
+
+        //    public void ReturnToPool()
+        //    {
+        //        pool.Release(_item);
+        //        Debug.Log($"Returned to pool");
+        //    }
+        //}
 
         public enum PoolType
         {
@@ -73,15 +72,15 @@ namespace Platformer.GameElements
         [SerializeField] private int _count;
         [SerializeField] private int _countMax;
 
-        private void Awake()
-        {
-            PoolManager<T>.instance.Register(tag, pool);
-        }
+        //private void Awake()
+        //{
+        //    PoolManager<T>.instance.Register(tag, pool);
+        //}
 
         protected virtual T CreatedPooledItem()
         {
             T item = Instantiate(_prefab);
-            item.gameObject.AddComponent<PooledItem>().pool = pool;
+            //item.gameObject.AddComponent<PooledItem>().pool = pool;
             return item;
         }
 

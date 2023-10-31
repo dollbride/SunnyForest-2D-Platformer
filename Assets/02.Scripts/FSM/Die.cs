@@ -18,9 +18,8 @@ namespace Platformer.FSM.Character
             controller.isMovable = false;
             // 랜딩할 때 미끄러지지 않고 멈추고 싶을 때 추가하는 함수:
             controller.Stop();
-            controller.enabled = false;
             trigger.enabled = false;
-            rigidbody.simulated = false;
+            //rigidbody.simulated = false;
             animator.Play("Die");
         }
 
@@ -32,7 +31,7 @@ namespace Platformer.FSM.Character
                 return id;
 
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f )
-                controller.gameObject.SetActive(false);
+                transform.gameObject.SetActive(false);
 
             return nextID;
         }

@@ -1,6 +1,7 @@
 ﻿using Platformer.Effetcs;
 using Platformer.FSM;
 using Platformer.GameElements;
+using Platformer.GameElements.Pool;
 using UnityEngine;
 
 namespace Platformer.Controllers
@@ -23,9 +24,9 @@ namespace Platformer.Controllers
         }
 
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
             machine = new PlayerMachine(this);
             var machineData = StateMachineDataSheet.GetPlayerData(machine);
             machine.Init(machineData);
@@ -123,7 +124,7 @@ namespace Platformer.Controllers
                 Knockback(Vector2.right * (((Transform)subject).position.x - transform.position.x < 0 ? 1.0f : -1.0f) * 1.0f
                           + Vector2.up * 1.0f);
 
-            DamagePopUp damagePopUp = PoolManager<DamagePopUp>.instance
+            DamagePopUp damagePopUp = PoolManager.instance
                                      .Get<DamagePopUp>(PoolTag.DamagePopUp_Player);
             damagePopUp.transform.position = transform.position + Vector3.up * 0.5f;
             damagePopUp.Show(amount);
