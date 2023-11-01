@@ -1,4 +1,4 @@
-using Platformer.Effetcs;
+using Platformer.Effects;
 using UnityEngine;
 using UnityEngine.Pool;
 

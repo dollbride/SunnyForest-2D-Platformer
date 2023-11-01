@@ -1,4 +1,4 @@
-﻿using Platformer.Effetcs;
+﻿using Platformer.Effects;
 
 namespace Platformer.GameElements.Pool.Generic
 {

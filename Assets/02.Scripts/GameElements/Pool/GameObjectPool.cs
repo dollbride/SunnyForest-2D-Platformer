@@ -44,7 +44,7 @@ namespace Platformer.GameElements.Pool
                 if (_pool == null)
                 {
                     if (_collectionType == PoolType.Stack)
-                        _pool = new ObjectPool<GameObject>(CreatedPooledItem,
+                        _pool = new ObjectPool<GameObject>(CreatePooledItem,
                                                             OnGetFromPool,
                                                             OnReturnToPool,
                                                             OnDestroyPooledItem,
@@ -52,7 +52,7 @@ namespace Platformer.GameElements.Pool
                                                             _defaultCapacity,
                                                             _sizeMax);
                     else
-                        _pool = new LinkedPool<GameObject>(CreatedPooledItem,
+                        _pool = new LinkedPool<GameObject>(CreatePooledItem,
                                                             OnGetFromPool,
                                                             OnReturnToPool,
                                                             OnDestroyPooledItem,
@@ -72,7 +72,7 @@ namespace Platformer.GameElements.Pool
             PoolManager.instance.Register(tag, pool);
         }
 
-        private GameObject CreatedPooledItem()
+        private GameObject CreatePooledItem()
         {
             GameObject item = Instantiate(_prefab);
             item.AddComponent<PooledItem>().pool = pool;

@@ -6,5 +6,6 @@
         DamagePopUp_Player,
         DamagePopUp_Enemy,
         Enemy_Slug,
+        Enemy_Nepenthes,
     }
 }

@@ -1,11 +1,9 @@
-using Platformer.Effetcs;
+using Platformer.Effects;
 using Platformer.FSM;
 using Platformer.GameElements;
 using Platformer.Stats;
-using Platformer.Test;
 using System;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Platformer.Controllers
@@ -236,7 +234,7 @@ namespace Platformer.Controllers
             Color color = renderer.color;
             color.a = 1.0f;
             renderer.color = color;
-            machine.ChangeStateForcely(CharacterStateID.Idle);
+            //machine.ChangeStateForcely(CharacterStateID.Idle);
         }
 
         public void Knockback(Vector2 force)

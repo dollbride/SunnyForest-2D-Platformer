@@ -1,9 +1,6 @@
-﻿using Platformer.Controllers;
-using Platformer.FSM.Character;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using CharacterController = Platformer.Controllers.CharacterController;
 
 namespace Platformer.FSM
@@ -13,7 +10,7 @@ namespace Platformer.FSM
     {
         public T currentStateID;
         public T previousStateID;
-        public Dictionary<T, IState<T>> states;
+        protected Dictionary<T, IState<T>> states;
         private bool _isDirty;
 
         public void Init(IDictionary<T, IState<T>> copy)

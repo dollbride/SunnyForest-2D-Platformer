@@ -1,4 +1,4 @@
-﻿using Platformer.Effetcs;
+﻿using Platformer.Effects;
 using Platformer.FSM;
 using Platformer.GameElements;
 using Platformer.GameElements.Pool;
@@ -93,7 +93,9 @@ namespace Platformer.Controllers
         private void UpdateAI()
         {
             if (machine.currentStateID == CharacterStateID.Hurt || 
-                machine.currentStateID == CharacterStateID.Die) 
+                machine.currentStateID == CharacterStateID.Die ||
+                machine.currentStateID == CharacterStateID.Attack
+                ) 
                 return;
 
             // 자동 따라가기 옵션이 켜져있는데

@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace Platformer.Effetcs
+namespace Platformer.Effects
 {
     public class DamagePopUp : MonoBehaviour
     {

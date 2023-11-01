@@ -1,6 +1,5 @@
-﻿using Platformer.Effetcs;
+﻿using Platformer.Effects;
 using Platformer.FSM;
-using Platformer.GameElements;
 using Platformer.GameElements.Pool;
 using UnityEngine;
 

@@ -21,6 +21,7 @@ namespace Platformer.FSM
         Hurt,
         Die,
         Attack,
+        DashAttack,
         WallSlide,
         LadderUp,
         LadderDown,
