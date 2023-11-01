@@ -4,7 +4,6 @@ using Platformer.Datum;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 namespace Platformer.FSM.Character
 {
@@ -71,18 +70,7 @@ namespace Platformer.FSM.Character
             _comboResetTime = comboResetTime;
 
             _animationEvents = animator.GetComponent<CharacterAnimationEvents>();
-            _animationEvents.onHit = () =>
-            {
-                foreach (var target in _targets)
-                {
-                    if (target == null)
-                        continue;
 
-                    float damage = Random.Range(controller.damageMin, controller.damageMax) * _attackSettings[_comboStack - 1].damageGain;
-                    target.DepleteHp(transform, damage);
-                }
-                _hasHit = true;
-            };
         }
 
         public override void OnStateEnter()
@@ -111,6 +99,20 @@ namespace Platformer.FSM.Character
                 if (hits[i].collider.TryGetComponent(out IHp target))
                     _targets.Add(target);
             }
+
+            _animationEvents.onHit = () =>
+            {
+                foreach (var target in _targets)
+                {
+                    if (target == null)
+                        continue;
+
+                    float damage = Random.Range(controller.damageMin, controller.damageMax) * _attackSettings[_comboStack - 1].damageGain;
+                    target.DepleteHp(transform, damage);
+                }
+                _hasHit = true;
+                Debug.Log("Hit");
+            };
 
             animator.SetFloat("comboStack", _comboStack++); //애니메이션 파라미터 세팅 및 콤보스택 쌓기
             animator.Play("Attack");
@@ -158,7 +160,7 @@ namespace Platformer.FSM.Character
                 nextID = CharacterStateID.Idle;
 
             if (controller.isGrounded)
-                controller.move = new Vector2(controller.horizontal * 0.1f, 0.0f);
+                controller.move = new Vector2(controller.horizontal * controller.moveSpeed * 0.1f, 0.0f);
 
             return nextID;
         }

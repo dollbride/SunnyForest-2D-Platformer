@@ -52,6 +52,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-7982283217160444430
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DashAttack
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 692cd4a0159039f44a56fb58c5a396a5, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-5267540058746311004
 AnimatorState:
   serializedVersion: 6
@@ -92,43 +118,46 @@ AnimatorStateMachine:
     m_Position: {x: 200, y: 0, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7394766831970502700}
-    m_Position: {x: 235, y: 65, z: 0}
+    m_Position: {x: 200, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8409467284669222987}
-    m_Position: {x: 240, y: 150, z: 0}
+    m_Position: {x: 200, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -771801645357329478}
-    m_Position: {x: 230, y: 240, z: 0}
+    m_Position: {x: 200, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5267540058746311004}
-    m_Position: {x: 220, y: 350, z: 0}
+    m_Position: {x: 200, y: 240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8840389070507057645}
-    m_Position: {x: 255, y: 415, z: 0}
+    m_Position: {x: 590, y: 390, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5004335313851728994}
-    m_Position: {x: 290, y: 480, z: 0}
+    m_Position: {x: 580, y: 450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4543778248551483601}
-    m_Position: {x: 290, y: 550, z: 0}
+    m_Position: {x: 200, y: 300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 734803068189674140}
-    m_Position: {x: 610, y: 330, z: 0}
+    m_Position: {x: 200, y: 360, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1375038920023593131}
-    m_Position: {x: 600.2761, y: 186.02823, z: 0}
+    m_Position: {x: 190, y: 420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1180507392304641225}
-    m_Position: {x: 600, y: 260, z: 0}
+    m_Position: {x: 190, y: 490, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4174798397790798140}
-    m_Position: {x: 610, y: 470, z: 0}
+    m_Position: {x: 590, y: 530, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4984104071688385322}
-    m_Position: {x: 620, y: 400, z: 0}
+    m_Position: {x: 590, y: 330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8727108326047286650}
-    m_Position: {x: 380, y: 770, z: 0}
+    m_Position: {x: 190, y: 550, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -7982283217160444430}
+    m_Position: {x: 190, y: 610, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -231,7 +260,7 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -333,7 +362,7 @@ BlendTree:
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: f158a08d1f5fa854ba1a0d2a5579c50a, type: 2}
-    m_Threshold: 0.6440415
+    m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -349,7 +378,7 @@ BlendTree:
     m_Mirror: 0
   m_BlendParameter: comboStack
   m_BlendParameterY: comboStack
-  m_MinThreshold: 0.6440415
+  m_MinThreshold: 0
   m_MaxThreshold: 1
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
