@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4825666429613075588}
-  - component: {fileID: 3612923954453144593}
+  - component: {fileID: 134177716499076548}
   m_Layer: 16
   m_Name: Collision
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2297140229848997315}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &3612923954453144593
+--- !u!70 &134177716499076548
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,9 +64,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.024907699, y: 0.096302964}
-  m_Size: {x: 0.2511093, y: 0.1926073}
-  m_Direction: 1
+  m_Offset: {x: 0.006199524, y: 0.18017003}
+  m_Size: {x: 0.27673104, y: 0.36034137}
+  m_Direction: 0
 --- !u!1 &4686557729741623380
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,9 +78,9 @@ GameObject:
   - component: {fileID: 2297140229848997315}
   - component: {fileID: 5266107494913281883}
   - component: {fileID: 37364201185983965}
-  - component: {fileID: 7907616641266256715}
+  - component: {fileID: 6483872976795596011}
   m_Layer: 15
-  m_Name: Slug
+  m_Name: DarkNepenthes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,10 +163,10 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.024907699, y: 0.096302964}
-  m_Size: {x: 0.2511093, y: 0.1926073}
-  m_Direction: 1
---- !u!114 &7907616641266256715
+  m_Offset: {x: 0.006199524, y: 0.18017003}
+  m_Size: {x: 0.27673104, y: 0.36034137}
+  m_Direction: 0
+--- !u!114 &6483872976795596011
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -175,20 +175,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4686557729741623380}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7646a5e072a13ae4d80b763c85fd8d89, type: 3}
+  m_Script: {fileID: 11500000, guid: e33d3a09feff9f54a8ce4341ba3e50af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageMin: 5
-  damageMax: 10
+  damageMin: 8
+  damageMax: 15
   isDirectionChangeable: 0
   isMovable: 0
   move: {x: 0, y: 0}
-  _moveSpeed: 0.3
+  _moveSpeed: 0
   ground: {fileID: 0}
   groundBelow: {fileID: 0}
   _groundDetectOffset: {x: 0, y: 0}
-  _groundDetectSize: {x: 0.1, y: 0.02}
-  _groundBelowDetectDistance: 2
+  _groundDetectSize: {x: 0, y: 0}
+  _groundBelowDetectDistance: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -208,14 +208,14 @@ MonoBehaviour:
   hasJumped: 0
   hasDoubleJumped: 0
   _ai: 0
-  _targetDetectRange: 1.5
+  _targetDetectRange: 3
   _autoFollow: 1
-  _attackEnabled: 0
-  _attackRange: 0
+  _attackEnabled: 1
+  _attackRange: 1.5
   _targetMask:
     serializedVersion: 2
     m_Bits: 1024
-  _behaviours: 020000000100000003000000
+  _behaviours: 0100000002000000
   _behaviourTimeMin: 0.5
   _behaviourTimeMax: 2
   _slopeAngle: 45
@@ -346,7 +346,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.28}
+  m_AnchoredPosition: {x: 0, y: 0.43}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &646045187102441031
@@ -654,8 +654,8 @@ GameObject:
   - component: {fileID: 8633423204055001035}
   - component: {fileID: 9143980792770819662}
   - component: {fileID: 9014885910289662191}
-  - component: {fileID: 3691677317497159589}
-  m_Layer: 30
+  - component: {fileID: 6174846321922052938}
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -671,7 +671,7 @@ Transform:
   m_GameObject: {fileID: 9219174592983114500}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.014, y: 0.11, z: 0.00077960803}
+  m_LocalPosition: {x: 0.01, y: 0.23, z: 0.00077960803}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -718,8 +718,8 @@ SpriteRenderer:
   m_SortingLayerID: 1350024331
   m_SortingLayer: 7
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 6c38dfd7970ac4270aa8ba1f5d845cd0, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 86afbf04432b34e1883a20f99f007881, type: 3}
+  m_Color: {r: 0.5377358, g: 0.25567815, b: 0.25567815, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
@@ -739,7 +739,7 @@ Animator:
   m_GameObject: {fileID: 9219174592983114500}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b8019133858dbec47856c96f21896dc2, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5d6f73278cf730c498cd82fefbbdc0d7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -750,7 +750,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3691677317497159589
+--- !u!114 &6174846321922052938
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

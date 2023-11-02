@@ -7,5 +7,8 @@
         DamagePopUp_Enemy,
         Enemy_Slug,
         Enemy_Nepenthes,
+        Enemy_DarkNepenthes,
+        Projectile_DarkNepenthes,
+        Particle_ProjectileExplosion,
     }
 }

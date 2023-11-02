@@ -34,7 +34,7 @@ namespace Platformer.Controllers
         [SerializeField] private bool _autoFollow;
         [SerializeField] private bool _attackEnabled;
         [SerializeField] private float _attackRange;
-        [SerializeField] private LayerMask _targetMask;
+        [SerializeField] public LayerMask _targetMask;
         [SerializeField] private List<CharacterStateID> _behaviours;
         [SerializeField] private float _behaviourTimeMin;
         [SerializeField] private float _behaviourTimeMax;
@@ -42,6 +42,8 @@ namespace Platformer.Controllers
         [SerializeField] private float _slopeAngle = 45.0f;
 
         private CapsuleCollider2D _trigger;
+
+        public bool isEnemyDetected;
 
         public override void SetUp()
         {
@@ -54,6 +56,8 @@ namespace Platformer.Controllers
             base.Awake();
             _trigger = GetComponent<CapsuleCollider2D>();
             _ai = AI.Think;
+
+            isEnemyDetected = false;
         }
 
         protected override void Update()
@@ -118,6 +122,8 @@ namespace Platformer.Controllers
             if (_target)
             {
                 _ai = AI.Follow;
+
+                isEnemyDetected = true;
             }
 
             switch (_ai)

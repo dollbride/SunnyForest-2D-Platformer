@@ -44,7 +44,7 @@ namespace Platformer.Controllers
                 onDirectionChanged?.Invoke(_direction);
             }
         }
-        private int _direction;     // 우측 1과 좌측 -1만 존재. x축 좌표랑 상관 없음.
+        private int _direction = DIRECTION_RIGHT;     // 우측 1과 좌측 -1만 존재. x축 좌표랑 상관 없음.
         public event Action<int> onDirectionChanged;
         public bool isDirectionChangeable;
 
