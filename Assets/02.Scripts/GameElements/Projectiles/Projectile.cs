@@ -1,10 +1,14 @@
-﻿using UnityEditor.U2D.Aseprite;
+﻿using Platformer.Effects;
+using Platformer.GameElements.Pool;
+using Unity.Burst.CompilerServices;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 namespace Platformer.GameElements
 {
     public class Projectile : MonoBehaviour
     {
+        [SerializeField] private PoolTag _effectPoolTag;
         [HideInInspector] public Transform owner;
         [HideInInspector] public Vector3 velocity;
         [HideInInspector] public LayerMask targetMask;
@@ -40,13 +44,27 @@ namespace Platformer.GameElements
         protected virtual void OnHitBound(RaycastHit2D hit)
         {
             gameObject.SetActive(false);
+            ExplosionEffect(hit);
 
         }
 
         protected virtual void OnHitTarget(RaycastHit2D hit)
         {
             gameObject.SetActive(false);
+            ExplosionEffect(hit);
 
+        }
+
+        private void ExplosionEffect(RaycastHit2D hit)
+        {
+            ParticleSystem ps = ParticleSystemPoolManager.instance.Get<ParticleSystem>(_effectPoolTag);
+            ps.transform.position = hit.point;
+            // 충돌체 평면의 노말 벡터(수직 방향)를 구하고
+            // 이걸 축으로 해서 날아온 방향을 반전하면
+            // 튕겨나가는 방향을 정할 수 있다.
+            float theta = Mathf.Acos(Vector2.Dot(-velocity.normalized, hit.normal)) * Mathf.Rad2Deg;
+            Vector2 look = Quaternion.Euler(0.0f, 0.0f, theta) * hit.normal;
+            ps.transform.LookAt(hit.point + look);
         }
 
 

@@ -1,3 +1,4 @@
+using Platformer.GameElements.Pool;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -59,6 +60,12 @@ namespace Platformer.Effects
 
         // 이 부분 추가(내가 만든 파티클 프리팹 연결하려고)
         [SerializeField] private ParticleSystem _prefab;
+        [SerializeField] private PoolTag _poolTag;
+
+        private void Awake()
+        {
+            ParticleSystemPoolManager.instance.Register(_poolTag, Pool);
+        }
 
         ParticleSystem CreatePooledItem()
         {

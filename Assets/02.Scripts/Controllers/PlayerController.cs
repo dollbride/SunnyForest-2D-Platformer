@@ -1,5 +1,6 @@
 ﻿using Platformer.Effects;
 using Platformer.FSM;
+using Platformer.GameElements;
 using Platformer.GameElements.Pool;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Platformer.Controllers
         public override float vertical => Input.GetAxis("Vertical");
 
         private float _invincibleTimer;
+        private LayerMask _portalMask;
 
         public void SetInvincible(float duration)
         {
@@ -26,6 +28,7 @@ namespace Platformer.Controllers
         protected override void Awake()
         {
             base.Awake();
+            _portalMask = 1 << LayerMask.NameToLayer("Portal");
             machine = new PlayerMachine(this);
             var machineData = StateMachineDataSheet.GetPlayerData(machine);
             machine.Init(machineData);
@@ -64,7 +67,6 @@ namespace Platformer.Controllers
                 }
             }
 
-
             if (Input.GetKey(KeyCode.RightArrow) ||
                 Input.GetKey(KeyCode.LeftArrow))
             {
@@ -78,6 +80,10 @@ namespace Platformer.Controllers
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 machine.ChangeState(CharacterStateID.LadderUp);
+
+                // 포탈 이동
+                Physics2D.OverlapPoint(transform.position, _portalMask)?
+                .GetComponent<Portal>().Teleport(transform);
             }
 
             if (Input.GetKey(KeyCode.DownArrow))
